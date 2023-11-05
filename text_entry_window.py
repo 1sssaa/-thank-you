@@ -6,6 +6,12 @@ from template import Point, WordTemplates
 
 
 class Application(tk.Frame):
+    class Application(tk.Frame):
+        def __init__(self, window_width, window_height, master=None):
+            super().__init__(master)
+            self.master = master
+            self.sequence = ""  # Initialize an empty string to track the sequence
+
     def __init__(self, window_width, window_height, master=None):
         super().__init__(master)  # Call tk.Frame.__init__(master)
         self.master = master  # Update the master object after tk.Frame() makes necessary changes to it
@@ -16,6 +22,8 @@ class Application(tk.Frame):
         # the top frame is used to show input words in the text
         frame_top = tk.Frame(self.master)
         frame_top.place(x=0, y=0, width=window_width, height=frame_top_height)
+
+        self.key_sequence = ""
 
         self.text = tk.Text(frame_top, bg='white', borderwidth=2, relief='groove', font=('Arial', 20))
         self.text.place(x=0, y=0, width=window_width, height=frame_top_height)
@@ -66,6 +74,20 @@ class Application(tk.Frame):
         self.canvas_keyboard.bind("<Double-Button-1>", self.mouse_left_button_double_click)
 
     # Task 2
+    def mouse_left_button_press(self, event):
+        self.cursor_move_position_list.append([event.x, event.y, 0])
+        self.keyboard.key_press(event.x, event.y)
+        self.gesture_points.clear()
+        key_pressed = self.keyboard.get_key_pressed()
+        self.key_sequence += key_pressed.lower()
+
+        if self.key_sequence == 'copyc':
+            messagebox.showinfo("Key Sequence Pressed", "This is a command")
+
+        def mouse_pointer_leave(self, event):
+            if self.key_sequence == 'copyc':
+             messagebox.showinfo("Command Executed", "This is a command")
+
     def mouse_left_button_double_click(self, event):
         characters = self.label_word_candidates[0].cget("text") # get the existing characters in the first word candidate label
         characters += self.keyboard.get_key_pressed()  # get the letter of the clicked key (by default uppercase)
@@ -82,12 +104,12 @@ class Application(tk.Frame):
 
     # press mouse left button
     def mouse_left_button_press(self, event):
-        self.cursor_move_position_list.append([event.x, event.y, 0])  # store x, y, segment tag
-        self.keyboard.key_press(event.x, event.y)
-        self.gesture_points.clear()
+        # ... (your existing code)
 
-        #self.gesture_points.append(Point(event.x, event.y))
+        key_pressed = self.keyboard.get_key_pressed()
+        self.sequence += key_pressed.lower()  # Append the pressed key to the sequence
 
+        # Check if the current sequence matches your desired sequence
 
     # release mouse left button
     def mouse_left_button_release(self, event):
